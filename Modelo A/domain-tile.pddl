@@ -1,4 +1,4 @@
-(define (domain n-puzzle-tile)
+(define (domain n-puzzle)
   (:requirements :strips :typing)
   (:types position tile)
 

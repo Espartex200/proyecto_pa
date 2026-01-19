@@ -1,24 +1,28 @@
 #!/bin/bash
-# Script: benchmark_total.sh
+# Script: benchmark.sh
 
 # --- CONFIGURACIÓN ---
-FD_PATH="/home/juanc/fast-downward/fast-downward.py"
-# Pon aquí la ruta a tu ejecutable de UCPOP si lo tienes
-UCPOP_CMD="/home/juanc/ucpop/ucpop"
+# 1. Ruta Fast Downward (con python3 delante para que no falle)
+FD_PATH="python3 /home/juanc/fast-downward/fast-downward.py"
+
+# 2. Ruta UCPOP (La que comprobamos que existe)
+UCPOP_CMD="/home/juanc/ucpop/ucpop" 
 
 # Archivo de salida
 OUT="benchmark_total.csv"
 echo "Problema,Dificultad,Planificador,Modelo,Tiempo,Pasos,Estado" > $OUT
 
 echo "=========================================================="
-echo " BENCHMARK TOTAL: 21 Problemas x 2 Modelos x 2 Planificadores"
+echo " BENCHMARK TOTAL: 21 Problemas (TODO REAL)"
+echo "   - Fast Downward: Tile vs Blank"
+echo "   - UCPOP: Blank (Timeout: 5s)"
 echo "=========================================================="
 
-# Bucle para recorrer los 21 problemas de Manuel
+# Bucle para recorrer los problemas
 for prob in "Modelo B/problems/"*.pddl; do
     prob_name=$(basename "$prob")
     
-    # Detectar dificultad (Facil/Medio/Dificil)
+    # Detectar dificultad
     if [[ $prob_name == *"2x2"* ]]; then diff="Facil";
     elif [[ $prob_name == *"3x3"* ]]; then diff="Medio";
     elif [[ $prob_name == *"4x4"* ]]; then diff="Dificil";
@@ -29,54 +33,55 @@ for prob in "Modelo B/problems/"*.pddl; do
     # ---------------------------------------------------------
     # 1. FAST DOWNWARD - MODELO TILE (TUYO)
     # ---------------------------------------------------------
-    echo "    [1/4] FD + TILE..."
-    # Timeout de 60 segundos (si no lo saca en 1 min, no lo saca en 5)
+    echo "    [1/3] FD + TILE..."
     out=$(timeout 60s $FD_PATH "Modelo A/domain-tile.pddl" "$prob" --search "lazy_greedy([ff()])" 2>&1)
     
-    # Extraer datos
-    time=$(echo "$out" | grep "Search time" | awk '{print $3}' | tr -d 's')
-    steps=$(echo "$out" | grep "Plan length" | awk '{print $3}')
-    if [[ "$out" == *"Solution found"* ]]; then state="OK"; else state="TIMEOUT"; fi
+    # Leemos la columna 6 (tiempo) y 6 (pasos) donde toca
+    time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
+    steps=$(echo "$out" | grep "Plan length" | awk '{print $6}')
     
-    echo "$prob_name,$diff,FastDownward,Tile,${time:-60},${steps:-0},$state" >> $OUT
+    if [[ "$out" == *"Solution found"* ]]; then state="OK"; else state="TIMEOUT"; fi
+    # Valores por defecto si falla
+    if [ "$state" == "TIMEOUT" ]; then time="60"; steps="-"; fi
+
+    echo "$prob_name,$diff,FastDownward,Tile,$time,$steps,$state" >> $OUT
 
 
     # ---------------------------------------------------------
     # 2. FAST DOWNWARD - MODELO BLANK (MANUEL)
     # ---------------------------------------------------------
-    echo "    [2/4] FD + BLANK..."
+    echo "    [2/3] FD + BLANK..."
     out=$(timeout 60s $FD_PATH "Modelo B/domain.pddl" "$prob" --search "lazy_greedy([ff()])" 2>&1)
     
-    time=$(echo "$out" | grep "Search time" | awk '{print $3}' | tr -d 's')
-    steps=$(echo "$out" | grep "Plan length" | awk '{print $3}')
+    time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
+    steps=$(echo "$out" | grep "Plan length" | awk '{print $6}')
+    
     if [[ "$out" == *"Solution found"* ]]; then state="OK"; else state="TIMEOUT"; fi
+    if [ "$state" == "TIMEOUT" ]; then time="60"; steps="-"; fi
     
-    echo "$prob_name,$diff,FastDownward,Blank,${time:-60},${steps:-0},$state" >> $OUT
-
-
+    echo "$prob_name,$diff,FastDownward,Blank,$time,$steps,$state" >> $OUT
+    
     # ---------------------------------------------------------
-    # 3. UCPOP (EL ANTIGUO)
+    # 3. UCPOP (REAL CON TIMEOUT CORTO)
     # ---------------------------------------------------------
-    # OJO: Solo intentamos UCPOP si tienes el comando configurado.
-    # Si no, comenta esta parte.
+    echo "    [3/3] UCPOP + BLANK..."
     
-    echo "    [3/4] UCPOP + BLANK (Intento)..."
-    # Ajusta este comando a como tú ejecutes UCPOP normalmente
-    # UCPOP suele ser lento, le damos 30s de timeout para no eternizar
-    # out_ucpop=$(timeout 30s $UCPOP_CMD "Modelo B/domain.pddl" "$prob" 2>&1)
+    # Le damos solo 5 segundos. Si puede, bien. Si no, fuera.
+    out_ucpop=$(timeout 5s $UCPOP_CMD "Modelo B/problems/$prob_name" 2>&1)
     
-    # Como UCPOP es difícil de parsear automáticamente, aquí asumimos TIMEOUT
-    # si es un problema grande. Puedes descomentar las líneas de arriba si quieres probarlo real.
+    # UCPOP es más difícil de leer automáticmente, así que miramos si dice "Stats:"
+    # Si el comando timeout lo cortó, el código de salida será 124
+    ret_code=$?
     
-    if [[ $diff == "Facil" ]]; then
-       # Aquí podrías ejecutarlo de verdad si quieres
-       echo "$prob_name,$diff,UCPOP,Blank,-,-,INTENTADO" >> $OUT
+    if [ $ret_code -eq 124 ]; then
+        echo "$prob_name,$diff,UCPOP,Blank,5.0,-,TIMEOUT" >> $OUT
     else
-       # Para los grandes, asumimos que explota (para ahorrarte 30 mins de espera)
-       echo "$prob_name,$diff,UCPOP,Blank,-,-,SKIP_TIMEOUT" >> $OUT
+        # Si terminó, intentamos ver si tuvo éxito (esto depende de lo que escupa tu ucpop)
+        # Asumimos OK si no murió por timeout para simplificar, o ERROR si falló
+        echo "$prob_name,$diff,UCPOP,Blank,-,-,INTENTADO" >> $OUT
     fi
 
 done
 
 echo ""
-echo "✅ ¡TERMINADO! Tabla guardada en $OUT"
+echo "✅ ¡TERMINADO! Revisa $OUT"
