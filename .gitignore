@@ -1,0 +1,19 @@
+# --- Archivos grandes del contenedor ---
+*.sif
+*.img
+
+# --- Archivos temporales de Fast Downward ---
+output.sas
+sas_plan
+sas_plan.*
+elapsed.time
+
+# --- Python ---
+__pycache__/
+*.pyc
+
+# --- Archivos generados dinámicamente (Opcional) ---
+# Si quieres guardar tus ejemplos, no pongas esto.
+# Si generas 1000 archivos de prueba y no los quieres, descomenta:
+# prob_*.pddl
+# resultados_benchmark.csv
