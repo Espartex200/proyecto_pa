@@ -11,6 +11,7 @@ elapsed.time
 # --- Python ---
 __pycache__/
 *.pyc
+config.env
 
 # --- Archivos generados dinámicamente (Opcional) ---
 # Si quieres guardar tus ejemplos, no pongas esto.

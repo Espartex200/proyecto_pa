@@ -1,26 +1,21 @@
 #!/bin/bash
 # Script: benchmark.sh
 
-# --- CARGA DE CONFIGURACIÓN LOCAL ---
-if [ -f "config.env" ]; then
-    source config.env
-    echo "Configuración cargada desde config.env"
-else
-    echo "⚠️ ADVERTENCIA: No se encontró config.env. Usando valores por defecto."
-    # Aquí puedes poner valores de respaldo por si acaso
-    FD_PATH="python3 /home/juanc/fast-downward/fast-downward.py"
-    UCPOP_CMD="/home/juanc/ucpop/ucpop" 
-    OUT="benchmark_total.csv"
-fi
+# --- CONFIGURACIÓN ---
+# 1. Ruta Fast Downward (con python3 delante para que no falle)
+FD_PATH="python3 /home/juanc/fast-downward/fast-downward.py"
 
-rm -f "$OUT"
+# 2. Ruta UCPOP (La que comprobamos que existe)
+UCPOP_CMD="/home/juanc/ucpop/ucpop" 
+
+# Archivo de salida
+OUT="benchmark_total.csv"
 echo "Problema,Dificultad,Planificador,Modelo,Tiempo,Pasos,Estado" > $OUT
 
 echo "=========================================================="
 echo " BENCHMARK TOTAL: 21 Problemas (TODO REAL)"
 echo "   - Fast Downward: Tile vs Blank"
 echo "   - UCPOP: Blank (Timeout: 5s)"
-echo "   - PDB: Blank"
 echo "=========================================================="
 
 # Bucle para recorrer los problemas
@@ -38,7 +33,7 @@ for prob in "Modelo B/problems/"*.pddl; do
     # ---------------------------------------------------------
     # 1. FAST DOWNWARD - MODELO TILE (TUYO)
     # ---------------------------------------------------------
-    echo "    [1/4] FD + TILE..."
+    echo "    [1/3] FD + TILE..."
     out=$(timeout 60s $FD_PATH "Modelo A/domain-tile.pddl" "$prob" --search "lazy_greedy([ff()])" 2>&1)
     
     # Leemos la columna 6 (tiempo) y 6 (pasos) donde toca
@@ -55,7 +50,7 @@ for prob in "Modelo B/problems/"*.pddl; do
     # ---------------------------------------------------------
     # 2. FAST DOWNWARD - MODELO BLANK (MANUEL)
     # ---------------------------------------------------------
-    echo "    [2/4] FD + BLANK..."
+    echo "    [2/3] FD + BLANK..."
     out=$(timeout 60s $FD_PATH "Modelo B/domain.pddl" "$prob" --search "lazy_greedy([ff()])" 2>&1)
     
     time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
@@ -69,7 +64,7 @@ for prob in "Modelo B/problems/"*.pddl; do
     # ---------------------------------------------------------
     # 3. UCPOP (REAL CON TIMEOUT CORTO)
     # ---------------------------------------------------------
-    echo "    [3/4] UCPOP + BLANK..."
+    echo "    [3/3] UCPOP + BLANK..."
     
     # Le damos solo 5 segundos. Si puede, bien. Si no, fuera.
     out_ucpop=$(timeout 5s $UCPOP_CMD "Modelo B/problems/$prob_name" 2>&1)
@@ -85,20 +80,6 @@ for prob in "Modelo B/problems/"*.pddl; do
         # Asumimos OK si no murió por timeout para simplificar, o ERROR si falló
         echo "$prob_name,$diff,UCPOP,Blank,-,-,INTENTADO" >> $OUT
     fi
-
-    # ---------------------------------------------------------
-    # 4. PDB
-    # ---------------------------------------------------------
-    echo "    [4/4] PDB + BLANK..."
-    out=$(timeout 120s $FD_PATH "Modelo B/domain.pddl" "$prob" --search "astar(ipdb())" 2>&1)
-    
-    time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
-    steps=$(echo "$out" | grep "Plan length" | awk '{print $6}')
-    
-    if [[ "$out" == *"Solution found"* ]]; then state="OK"; else state="TIMEOUT"; fi
-    if [ "$state" == "TIMEOUT" ]; then time="60"; steps="-"; fi
-    
-    echo "$prob_name,$diff,PDB,Blank,$time,$steps,$state" >> $OUT
 
 done
 
