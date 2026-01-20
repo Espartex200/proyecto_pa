@@ -3,7 +3,6 @@
 
 # --- CONFIGURACIÓN ---
 FD_PATH="python3 /home/juanc/fast-downward/fast-downward.py"
-# IMPORTANTE: Subimos a 30s porque el doc dice que IPDB tarda en "pre-calcular" 
 TIMEOUT_VAL="30s"
 
 # Archivo de salida
@@ -38,7 +37,6 @@ for prob in "Modelo B/problems/"*.pddl; do
         fi
 
         # --- BUCLE DE HEURÍSTICAS ---
-        # Añadimos IPDB (Pattern Databases) como sugiere el documento 
         for heur_name in "Blind" "FF" "LMCut" "IPDB"; do
             
             # Configurar búsqueda
@@ -49,7 +47,6 @@ for prob in "Modelo B/problems/"*.pddl; do
             elif [ "$heur_name" == "LMCut" ]; then
                 search_conf="astar(lmcut())"
             elif [ "$heur_name" == "IPDB" ]; then
-                # Esta es la específica para puzzles
                 search_conf="astar(ipdb())"
             fi
 
@@ -58,21 +55,21 @@ for prob in "Modelo B/problems/"*.pddl; do
             # EJECUCIÓN
             out=$(timeout $TIMEOUT_VAL $FD_PATH "$domain" "$prob" --search "$search_conf" 2>&1)
 
-            # PARSEO
-            time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
-            steps=$(echo "$out" | grep "Plan length" | awk '{print $6}')
-            nodes=$(echo "$out" | grep "Expanded" | awk '{print $5}')
+            # PARSEO (CORREGIDO - añade head -n 1 y tr -d '\n\r')
+            time=$(echo "$out" | grep "Search time" | head -n 1 | awk '{print $6}' | tr -d 's\n\r')
+            steps=$(echo "$out" | grep "Plan length" | head -n 1 | awk '{print $6}' | tr -d '\n\r')
+            nodes=$(echo "$out" | grep "Expanded" | head -n 1 | awk '{print $5}' | tr -d '\n\r')
 
             if [[ "$out" == *"Solution found"* ]]; then 
                 state="OK"
             else 
                 state="TIMEOUT"
-                # Valores por defecto para que la gráfica no quede vacía
                 time="30"
                 steps="-"
                 nodes="-"
             fi
 
+            # ESCRITURA - asegura que todo esté en UNA línea
             echo "$prob_name,$diff,FastDownward,$model,$heur_name,$time,$steps,$nodes,$state" >> $OUT
 
         done
