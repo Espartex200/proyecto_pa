@@ -1,11 +1,24 @@
 #!/bin/bash
+ --- CARGA DE CONFIGURACIÓN LOCAL ---
+if [ -f "config.env" ]; then
+    source config.env
+    echo "Configuración cargada desde config.env"
+else
+    echo "ADVERTENCIA: No se encontró config.env. Usando valores por defecto."
+    FD_PATH="python3 /home/juanc/fast-downward/fast-downward.py"
+    UCPOP_CMD="/home/juanc/ucpop/ucpop" 
+fi
+
+# --- CARGA DE CONFIGURACIÓN GENERAL ---
+TIMEOUT=60
+PROBLEMS_FOLDER="problems/hard"
+
 
 # Configuración
 TIMEOUT=60
-FD="python3 /home/juanc/fast-downward/fast-downward.py"
-LOG_DIR="logs_hard_full"
+LOG_DIR="results/logs_hard_full"
 
-# Asegurar que el dominio entiende a los problemas (Fix rápido)
+# Asegurar que el dominio entiende a los problemas
 sed -i 's/blank/empty/g' domain-tile.pddl 2>/dev/null
 
 mkdir -p "$LOG_DIR"
@@ -18,26 +31,26 @@ run_ex() {
     local model=$2     # tile, blank
     local heur_name=$3 # Blind, FF, LMCut, IPDB
     local heur_cmd=$4  # astar(blind()), etc.
-    local domain="domain-${model}.pddl"
+    local domain="problems/hard/domain-${model}.pddl"
     
     # Seleccionar el problema correcto según tamaño y modelo
-    if [ "$size" == "8" ]; then prob="problem-${model}-hard.pddl"; fi
-    if [ "$size" == "12" ]; then prob="problem-${model}-12.pddl"; fi
-    if [ "$size" == "15" ]; then prob="problem-${model}-15.pddl"; fi
+    if [ "$size" == "8" ]; then prob="${PROBLEMS_FOLDER}/problem-${model}-hard.pddl"; fi
+    if [ "$size" == "12" ]; then prob="${PROBLEMS_FOLDER}/problem-${model}-12.pddl"; fi
+    if [ "$size" == "15" ]; then prob="${PROBLEMS_FOLDER}/problem-${model}-15.pddl"; fi
 
     local logfile="$LOG_DIR/log_${size}_${model}_${heur_name}.txt"
 
     echo "[EJECUTANDO] ${size}-Puzzle (${model}) con ${heur_name}..."
     
-    timeout $TIMEOUT bash -c "$FD '$domain' '$prob' --search '$heur_cmd'" > "$logfile" 2>&1
+    timeout $TIMEOUT bash -c "$FD_PATH '$domain' '$prob' --search '$heur_cmd'" > "$logfile" 2>&1
     
     # Si fue timeout, lo marcamos en el log
     if [ $? -eq 124 ]; then echo "TIMEOUT_MARKER" >> "$logfile"; fi
 }
 
-echo "=================================================="
-echo "  BENCHMARK TOTAL (HARD) - SÁLVESE QUIEN PUEDA"
-echo "=================================================="
+echo "==========================="
+echo "  BENCHMARK TOTAL (HARD)"
+echo "==========================="
 
 # Arrays de configuración
 MODELS=("tile" "blank")
@@ -54,4 +67,4 @@ for size in 8 12 15; do
 done
 
 echo ""
-echo "✅ TERMINADO. Ahora ejecuta el script de Python para ver la tabla."
+python3 ./problems/hard/generate_table.py

@@ -1,0 +1,305 @@
+INFO     planner time limit: None
+INFO     planner memory limit: None
+
+INFO     Running translator.
+INFO     translator stdin: None
+INFO     translator time limit: None
+INFO     translator memory limit: None
+INFO     translator command line string: /usr/bin/python3 /workspace/downward/builds/release/bin/translate/translate.py problems/hard/domain-tile.pddl problems/hard/problem-tile-12.pddl --sas-file output.sas
+Parsing...
+Parsing: [0.010s CPU, 0.003s wall-clock]
+Normalizing task... [0.000s CPU, 0.000s wall-clock]
+Instantiating...
+Generating Datalog program... [0.000s CPU, 0.000s wall-clock]
+Normalizing Datalog program...
+Normalizing Datalog program: [0.000s CPU, 0.005s wall-clock]
+Preparing model... [0.000s CPU, 0.000s wall-clock]
+Generated 8 rules.
+Computing model... [0.000s CPU, 0.003s wall-clock]
+622 relevant atoms
+212 auxiliary atoms
+834 final queue length
+1450 total queue pushes
+Completing instantiation... [0.010s CPU, 0.005s wall-clock]
+Instantiating: [0.010s CPU, 0.014s wall-clock]
+Computing fact groups...
+Finding invariants...
+5 initial candidates
+Finding invariants: [0.000s CPU, 0.000s wall-clock]
+Checking invariant weight... [0.000s CPU, 0.000s wall-clock]
+Instantiating groups... [0.000s CPU, 0.000s wall-clock]
+Collecting mutex groups... [0.000s CPU, 0.000s wall-clock]
+Choosing groups...
+0 uncovered facts
+Choosing groups: [0.000s CPU, 0.000s wall-clock]
+Building translation key... [0.000s CPU, 0.000s wall-clock]
+Computing fact groups: [0.000s CPU, 0.002s wall-clock]
+Building STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]
+Building dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]
+Building mutex information...
+Building mutex information: [0.000s CPU, 0.000s wall-clock]
+Translating task...
+Processing axioms...
+Simplifying axioms... [0.000s CPU, 0.000s wall-clock]
+Translator axioms removed by simplifying: 0
+Processing axioms: [0.000s CPU, 0.000s wall-clock]
+Translating task: [0.010s CPU, 0.006s wall-clock]
+0 effect conditions simplified
+0 implied preconditions added
+Detecting unreachable propositions...
+0 operators removed
+0 axioms removed
+12 propositions removed
+Detecting unreachable propositions: [0.000s CPU, 0.003s wall-clock]
+Reordering and filtering variables...
+12 of 12 variables necessary.
+12 of 24 mutex groups necessary.
+374 of 374 operators necessary.
+0 of 0 axiom rules necessary.
+Reordering and filtering variables: [0.000s CPU, 0.001s wall-clock]
+Translator variables: 12
+Translator derived variables: 0
+Translator facts: 144
+Translator goal facts: 12
+Translator mutex groups: 12
+Translator total mutex groups size: 144
+Translator operators: 374
+Translator axioms: 0
+Translator task size: 2182
+Translator peak memory: 33708 KB
+Writing output... [0.000s CPU, 0.002s wall-clock]
+Done! [0.030s CPU, 0.032s wall-clock]
+translate exit code: 0
+
+INFO     Running search (release).
+INFO     search stdin: output.sas
+INFO     search time limit: None
+INFO     search memory limit: None
+INFO     search command line string: /workspace/downward/builds/release/bin/downward --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas
+[t=0.001882s, 12124 KB] reading input...
+[t=0.003106s, 12260 KB] done reading input!
+[t=0.005565s, 12672 KB] Simplifying 748 unary operators... done! [748 unary operators]
+[t=0.006011s, 12672 KB] time to simplify: 0.000503s
+[t=0.006087s, 12672 KB] Initializing additive heuristic...
+[t=0.006115s, 12672 KB] Initializing FF heuristic...
+[t=0.006147s, 12672 KB] Building successor generator...done!
+[t=0.006335s, 12672 KB] peak memory difference for successor generator creation: 0 KB
+[t=0.006353s, 12672 KB] time for successor generation creation: 0.000100s
+[t=0.006374s, 12672 KB] Variables: 12
+[t=0.006389s, 12672 KB] FactPairs: 144
+[t=0.006404s, 12672 KB] Bytes per state: 8
+[t=0.006463s, 12672 KB] Conducting lazy best first search, (real) bound = 2147483647
+[t=0.006536s, 12672 KB] New best heuristic value for ff: 34
+[t=0.006561s, 12672 KB] g=0, 1 evaluated, 0 expanded
+[t=0.006582s, 12672 KB] Initial heuristic value for ff: 34
+[t=0.006618s, 12672 KB] New best heuristic value for ff: 33
+[t=0.006646s, 12672 KB] g=1, 3 evaluated, 2 expanded
+[t=0.006805s, 12672 KB] New best heuristic value for ff: 32
+[t=0.006833s, 12672 KB] g=4, 10 evaluated, 9 expanded
+[t=0.007087s, 12672 KB] New best heuristic value for ff: 31
+[t=0.007147s, 12672 KB] g=6, 23 evaluated, 22 expanded
+[t=0.007351s, 12672 KB] New best heuristic value for ff: 30
+[t=0.007399s, 12672 KB] g=10, 46 evaluated, 45 expanded
+[t=0.007613s, 12672 KB] New best heuristic value for ff: 29
+[t=0.007658s, 12672 KB] g=16, 71 evaluated, 70 expanded
+[t=0.008002s, 12672 KB] New best heuristic value for ff: 28
+[t=0.008070s, 12672 KB] g=18, 97 evaluated, 96 expanded
+[t=0.008389s, 12672 KB] New best heuristic value for ff: 26
+[t=0.008442s, 12672 KB] g=29, 137 evaluated, 136 expanded
+[t=0.009000s, 12672 KB] New best heuristic value for ff: 24
+[t=0.009066s, 12672 KB] g=37, 192 evaluated, 191 expanded
+[t=0.009119s, 12672 KB] New best heuristic value for ff: 23
+[t=0.009136s, 12672 KB] g=39, 196 evaluated, 195 expanded
+[t=0.009373s, 12672 KB] New best heuristic value for ff: 22
+[t=0.009423s, 12672 KB] g=41, 230 evaluated, 229 expanded
+[t=0.009782s, 12672 KB] New best heuristic value for ff: 21
+[t=0.009842s, 12672 KB] g=44, 257 evaluated, 256 expanded
+[t=0.009881s, 12672 KB] New best heuristic value for ff: 18
+[t=0.009897s, 12672 KB] g=45, 259 evaluated, 258 expanded
+[t=0.009993s, 12672 KB] New best heuristic value for ff: 17
+[t=0.010033s, 12672 KB] g=48, 271 evaluated, 270 expanded
+[t=0.010108s, 12672 KB] New best heuristic value for ff: 15
+[t=0.010125s, 12672 KB] g=52, 279 evaluated, 278 expanded
+[t=0.010246s, 12672 KB] New best heuristic value for ff: 14
+[t=0.010290s, 12672 KB] g=55, 296 evaluated, 295 expanded
+[t=0.010379s, 12672 KB] New best heuristic value for ff: 13
+[t=0.010402s, 12672 KB] g=58, 306 evaluated, 305 expanded
+[t=0.010861s, 12672 KB] New best heuristic value for ff: 12
+[t=0.010925s, 12672 KB] g=64, 347 evaluated, 346 expanded
+[t=0.012308s, 12672 KB] New best heuristic value for ff: 11
+[t=0.012396s, 12672 KB] g=77, 556 evaluated, 555 expanded
+[t=0.012816s, 12672 KB] New best heuristic value for ff: 10
+[t=0.012874s, 12672 KB] g=83, 596 evaluated, 595 expanded
+[t=0.013173s, 12672 KB] New best heuristic value for ff: 9
+[t=0.013220s, 12672 KB] g=87, 640 evaluated, 639 expanded
+[t=0.013793s, 12672 KB] New best heuristic value for ff: 8
+[t=0.013830s, 12672 KB] g=95, 698 evaluated, 697 expanded
+[t=0.013852s, 12672 KB] New best heuristic value for ff: 7
+[t=0.013868s, 12672 KB] g=96, 699 evaluated, 698 expanded
+[t=0.020148s, 12672 KB] New best heuristic value for ff: 6
+[t=0.020293s, 12672 KB] g=110, 1667 evaluated, 1666 expanded
+[t=0.021987s, 12672 KB] New best heuristic value for ff: 5
+[t=0.022069s, 12672 KB] g=116, 1870 evaluated, 1869 expanded
+[t=0.022891s, 12672 KB] New best heuristic value for ff: 3
+[t=0.022954s, 12672 KB] g=133, 1981 evaluated, 1980 expanded
+[t=0.022984s, 12672 KB] New best heuristic value for ff: 2
+[t=0.023001s, 12672 KB] g=134, 1982 evaluated, 1981 expanded
+[t=0.023020s, 12672 KB] New best heuristic value for ff: 1
+[t=0.023035s, 12672 KB] g=135, 1983 evaluated, 1982 expanded
+[t=0.023054s, 12672 KB] Solution found!
+[t=0.023078s, 12672 KB] Actual search time: 0.016585s
+move-tile t4 p2-4 p3-4 (1)
+move-tile t5 p2-3 p2-4 (1)
+move-tile t6 p2-2 p2-3 (1)
+move-tile t10 p1-2 p2-2 (1)
+move-tile t9 p1-3 p1-2 (1)
+move-tile t6 p2-3 p1-3 (1)
+move-tile t2 p3-3 p2-3 (1)
+move-tile t1 p3-2 p3-3 (1)
+move-tile t10 p2-2 p3-2 (1)
+move-tile t2 p2-3 p2-2 (1)
+move-tile t6 p1-3 p2-3 (1)
+move-tile t9 p1-2 p1-3 (1)
+move-tile t2 p2-2 p1-2 (1)
+move-tile t6 p2-3 p2-2 (1)
+move-tile t5 p2-4 p2-3 (1)
+move-tile t8 p1-4 p2-4 (1)
+move-tile t9 p1-3 p1-4 (1)
+move-tile t2 p1-2 p1-3 (1)
+move-tile t11 p1-1 p1-2 (1)
+move-tile t7 p2-1 p1-1 (1)
+move-tile t6 p2-2 p2-1 (1)
+move-tile t11 p1-2 p2-2 (1)
+move-tile t7 p1-1 p1-2 (1)
+move-tile t6 p2-1 p1-1 (1)
+move-tile t3 p3-1 p2-1 (1)
+move-tile t10 p3-2 p3-1 (1)
+move-tile t11 p2-2 p3-2 (1)
+move-tile t7 p1-2 p2-2 (1)
+move-tile t2 p1-3 p1-2 (1)
+move-tile t9 p1-4 p1-3 (1)
+move-tile t8 p2-4 p1-4 (1)
+move-tile t5 p2-3 p2-4 (1)
+move-tile t7 p2-2 p2-3 (1)
+move-tile t3 p2-1 p2-2 (1)
+move-tile t6 p1-1 p2-1 (1)
+move-tile t2 p1-2 p1-1 (1)
+move-tile t3 p2-2 p1-2 (1)
+move-tile t7 p2-3 p2-2 (1)
+move-tile t9 p1-3 p2-3 (1)
+move-tile t3 p1-2 p1-3 (1)
+move-tile t7 p2-2 p1-2 (1)
+move-tile t9 p2-3 p2-2 (1)
+move-tile t1 p3-3 p2-3 (1)
+move-tile t11 p3-2 p3-3 (1)
+move-tile t9 p2-2 p3-2 (1)
+move-tile t1 p2-3 p2-2 (1)
+move-tile t5 p2-4 p2-3 (1)
+move-tile t8 p1-4 p2-4 (1)
+move-tile t3 p1-3 p1-4 (1)
+move-tile t7 p1-2 p1-3 (1)
+move-tile t1 p2-2 p1-2 (1)
+move-tile t5 p2-3 p2-2 (1)
+move-tile t7 p1-3 p2-3 (1)
+move-tile t3 p1-4 p1-3 (1)
+move-tile t8 p2-4 p1-4 (1)
+move-tile t4 p3-4 p2-4 (1)
+move-tile t11 p3-3 p3-4 (1)
+move-tile t9 p3-2 p3-3 (1)
+move-tile t10 p3-1 p3-2 (1)
+move-tile t6 p2-1 p3-1 (1)
+move-tile t2 p1-1 p2-1 (1)
+move-tile t1 p1-2 p1-1 (1)
+move-tile t5 p2-2 p1-2 (1)
+move-tile t2 p2-1 p2-2 (1)
+move-tile t6 p3-1 p2-1 (1)
+move-tile t10 p3-2 p3-1 (1)
+move-tile t9 p3-3 p3-2 (1)
+move-tile t11 p3-4 p3-3 (1)
+move-tile t4 p2-4 p3-4 (1)
+move-tile t8 p1-4 p2-4 (1)
+move-tile t3 p1-3 p1-4 (1)
+move-tile t5 p1-2 p1-3 (1)
+move-tile t2 p2-2 p1-2 (1)
+move-tile t7 p2-3 p2-2 (1)
+move-tile t5 p1-3 p2-3 (1)
+move-tile t3 p1-4 p1-3 (1)
+move-tile t8 p2-4 p1-4 (1)
+move-tile t4 p3-4 p2-4 (1)
+move-tile t11 p3-3 p3-4 (1)
+move-tile t5 p2-3 p3-3 (1)
+move-tile t7 p2-2 p2-3 (1)
+move-tile t6 p2-1 p2-2 (1)
+move-tile t10 p3-1 p2-1 (1)
+move-tile t9 p3-2 p3-1 (1)
+move-tile t5 p3-3 p3-2 (1)
+move-tile t11 p3-4 p3-3 (1)
+move-tile t4 p2-4 p3-4 (1)
+move-tile t7 p2-3 p2-4 (1)
+move-tile t6 p2-2 p2-3 (1)
+move-tile t5 p3-2 p2-2 (1)
+move-tile t9 p3-1 p3-2 (1)
+move-tile t10 p2-1 p3-1 (1)
+move-tile t5 p2-2 p2-1 (1)
+move-tile t6 p2-3 p2-2 (1)
+move-tile t7 p2-4 p2-3 (1)
+move-tile t8 p1-4 p2-4 (1)
+move-tile t3 p1-3 p1-4 (1)
+move-tile t7 p2-3 p1-3 (1)
+move-tile t8 p2-4 p2-3 (1)
+move-tile t4 p3-4 p2-4 (1)
+move-tile t11 p3-3 p3-4 (1)
+move-tile t8 p2-3 p3-3 (1)
+move-tile t7 p1-3 p2-3 (1)
+move-tile t3 p1-4 p1-3 (1)
+move-tile t4 p2-4 p1-4 (1)
+move-tile t11 p3-4 p2-4 (1)
+move-tile t8 p3-3 p3-4 (1)
+move-tile t9 p3-2 p3-3 (1)
+move-tile t6 p2-2 p3-2 (1)
+move-tile t7 p2-3 p2-2 (1)
+move-tile t11 p2-4 p2-3 (1)
+move-tile t8 p3-4 p2-4 (1)
+move-tile t9 p3-3 p3-4 (1)
+move-tile t11 p2-3 p3-3 (1)
+move-tile t7 p2-2 p2-3 (1)
+move-tile t6 p3-2 p2-2 (1)
+move-tile t11 p3-3 p3-2 (1)
+move-tile t9 p3-4 p3-3 (1)
+move-tile t8 p2-4 p3-4 (1)
+move-tile t7 p2-3 p2-4 (1)
+move-tile t9 p3-3 p2-3 (1)
+move-tile t11 p3-2 p3-3 (1)
+move-tile t10 p3-1 p3-2 (1)
+move-tile t5 p2-1 p3-1 (1)
+move-tile t6 p2-2 p2-1 (1)
+move-tile t9 p2-3 p2-2 (1)
+move-tile t7 p2-4 p2-3 (1)
+move-tile t8 p3-4 p2-4 (1)
+move-tile t11 p3-3 p3-4 (1)
+move-tile t10 p3-2 p3-3 (1)
+move-tile t9 p2-2 p3-2 (1)
+move-tile t6 p2-1 p2-2 (1)
+move-tile t5 p3-1 p2-1 (1)
+move-tile t9 p3-2 p3-1 (1)
+move-tile t10 p3-3 p3-2 (1)
+move-tile t11 p3-4 p3-3 (1)
+[t=0.023097s, 12672 KB] Plan length: 136 step(s).
+[t=0.023097s, 12672 KB] Plan cost: 136
+[t=0.023097s, 12672 KB] Expanded 1983 state(s).
+[t=0.023097s, 12672 KB] Reopened 0 state(s).
+[t=0.023097s, 12672 KB] Evaluated 1984 state(s).
+[t=0.023097s, 12672 KB] Evaluations: 1984
+[t=0.023097s, 12672 KB] Generated 5751 state(s).
+[t=0.023097s, 12672 KB] Dead ends: 0 state(s).
+[t=0.023097s, 12672 KB] Number of registered states: 1984
+[t=0.023097s, 12672 KB] Int hash set load factor: 1984/2048 = 0.968750
+[t=0.023097s, 12672 KB] Int hash set resizes: 11
+[t=0.023097s, 12672 KB] Search time: 0.016636s
+[t=0.023097s, 12672 KB] Total time: 0.023097s
+Solution found.
+Peak memory: 12672 KB
+Remove intermediate file output.sas
+search exit code: 0
+
+INFO     Planner time: 0.35s

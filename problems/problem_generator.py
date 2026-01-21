@@ -101,7 +101,7 @@ def generate_problem(size, steps, filename="problem.pddl"):
     # 4. Escribir archivo
     with open(filename, "w") as f:
         f.write(f"(define (problem n-puzzle-{size}x{size})\n")
-        f.write("  (:domain n-puzzle)\n") # Asegúrate que coincida con tu archivo domain.pddl
+        f.write("  (:domain n-puzzle)\n")
         f.write("  (:objects\n")
         f.write(f"    {' '.join(tiles)} - tile\n")
         f.write(f"    {' '.join(positions)} - position\n")
@@ -123,7 +123,7 @@ def generate_problem(size, steps, filename="problem.pddl"):
 
 if __name__ == "__main__":
     # Configuración por defecto
-    SIZE = 3      # 3x3 (8-puzzle). Cambia a 4 para 15-puzzle
+    SIZE = 3      # 3x3 (8-puzzle)
     STEPS = 20    # Cantidad de movimientos para desordenar (Dificultad)
     OUTPUT = "problem.pddl"
 

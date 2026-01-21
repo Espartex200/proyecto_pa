@@ -1,30 +1,30 @@
-#!/bin/bash
-# Script: benchmark.sh
 
 # --- CARGA DE CONFIGURACIÓN LOCAL ---
 if [ -f "config.env" ]; then
     source config.env
     echo "Configuración cargada desde config.env"
 else
-    echo "⚠️ ADVERTENCIA: No se encontró config.env. Usando valores por defecto."
-    # Aquí puedes poner valores de respaldo por si acaso
+    echo "ADVERTENCIA: No se encontró config.env. Usando valores por defecto."
     FD_PATH="python3 /home/juanc/fast-downward/fast-downward.py"
     UCPOP_CMD="/home/juanc/ucpop/ucpop" 
-    OUT="benchmark_total.csv"
 fi
 
+# --- CARGA DE CONFIGURACIÓN GENERAL ---
+TIMEOUT_VAL="30s"
+OUT="results/benchmark.csv"
+PROBLEMS_FOLDER="problems/normal"
 rm -f "$OUT"
-echo "Problema,Dificultad,Planificador,Modelo,Tiempo,Pasos,Estado" > $OUT
+
+echo "Problema,Dificultad,Planificador,Modelo,Heuristica,Tiempo,Pasos,Nodos,Estado" > $OUT
 
 echo "=========================================================="
-echo " BENCHMARK TOTAL: 21 Problemas (TODO REAL)"
-echo "   - Fast Downward: Tile vs Blank"
-echo "   - UCPOP: Blank (Timeout: 5s)"
-echo "   - PDB: Blank"
+echo "   BENCHMARK TOTAL"
+echo "   - 2 Modelos: Tile vs Blank"
+echo "   - 4 Heurísticas: Blind, FF, LMCut, IPDB"
 echo "=========================================================="
 
-# Bucle para recorrer los problemas
-for prob in "Modelo B/problems/"*.pddl; do
+# Bucle de Problemas
+for prob in "$PROBLEMS_FOLDER"/*.pddl; do
     prob_name=$(basename "$prob")
     
     # Detectar dificultad
@@ -33,74 +33,55 @@ for prob in "Modelo B/problems/"*.pddl; do
     elif [[ $prob_name == *"4x4"* ]]; then diff="Dificil";
     else diff="Desconocido"; fi
 
-    echo ">>> Analizando: $prob_name ($diff)"
+    echo ">>> Procesando: $prob_name ($diff)"
 
-    # ---------------------------------------------------------
-    # 1. FAST DOWNWARD - MODELO TILE (TUYO)
-    # ---------------------------------------------------------
-    echo "    [1/4] FD + TILE..."
-    out=$(timeout 60s $FD_PATH "Modelo A/domain-tile.pddl" "$prob" --search "lazy_greedy([ff()])" 2>&1)
-    
-    # Leemos la columna 6 (tiempo) y 6 (pasos) donde toca
-    time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
-    steps=$(echo "$out" | grep "Plan length" | awk '{print $6}')
-    
-    if [[ "$out" == *"Solution found"* ]]; then state="OK"; else state="TIMEOUT"; fi
-    # Valores por defecto si falla
-    if [ "$state" == "TIMEOUT" ]; then time="60"; steps="-"; fi
+    # --- BUCLE DE MODELOS ---
+    for model in "Tile" "Blank"; do
+        
+        if [ "$model" == "Tile" ]; then
+            domain="Modelo A/domain-tile.pddl"
+        else
+            domain="Modelo B/domain-blank.pddl"
+        fi
+        # --- BUCLE DE HEURÍSTICAS ---
+        for heur_name in "Blind" "FF" "LMCut" "IPDB"; do
+            
+            # Configurar búsqueda
+            if [ "$heur_name" == "Blind" ]; then
+                search_conf="astar(blind())"
+            elif [ "$heur_name" == "FF" ]; then
+                search_conf="lazy_greedy([ff()])"
+            elif [ "$heur_name" == "LMCut" ]; then
+                search_conf="astar(lmcut())"
+            elif [ "$heur_name" == "IPDB" ]; then
+                search_conf="astar(ipdb())"
+            fi
 
-    echo "$prob_name,$diff,FastDownward,Tile,$time,$steps,$state" >> $OUT
+            echo "    Running: $model + $heur_name..."
 
+            # EJECUCIÓN
+            out=$(timeout $TIMEOUT_VAL $FD_PATH "$domain" "$prob" --search "$search_conf" 2>&1)
 
-    # ---------------------------------------------------------
-    # 2. FAST DOWNWARD - MODELO BLANK (MANUEL)
-    # ---------------------------------------------------------
-    echo "    [2/4] FD + BLANK..."
-    out=$(timeout 60s $FD_PATH "Modelo B/domain.pddl" "$prob" --search "lazy_greedy([ff()])" 2>&1)
-    
-    time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
-    steps=$(echo "$out" | grep "Plan length" | awk '{print $6}')
-    
-    if [[ "$out" == *"Solution found"* ]]; then state="OK"; else state="TIMEOUT"; fi
-    if [ "$state" == "TIMEOUT" ]; then time="60"; steps="-"; fi
-    
-    echo "$prob_name,$diff,FastDownward,Blank,$time,$steps,$state" >> $OUT
-    
-    # ---------------------------------------------------------
-    # 3. UCPOP (REAL CON TIMEOUT CORTO)
-    # ---------------------------------------------------------
-    echo "    [3/4] UCPOP + BLANK..."
-    
-    # Le damos solo 5 segundos. Si puede, bien. Si no, fuera.
-    out_ucpop=$(timeout 5s $UCPOP_CMD "Modelo B/problems/$prob_name" 2>&1)
-    
-    # UCPOP es más difícil de leer automáticmente, así que miramos si dice "Stats:"
-    # Si el comando timeout lo cortó, el código de salida será 124
-    ret_code=$?
-    
-    if [ $ret_code -eq 124 ]; then
-        echo "$prob_name,$diff,UCPOP,Blank,5.0,-,TIMEOUT" >> $OUT
-    else
-        # Si terminó, intentamos ver si tuvo éxito (esto depende de lo que escupa tu ucpop)
-        # Asumimos OK si no murió por timeout para simplificar, o ERROR si falló
-        echo "$prob_name,$diff,UCPOP,Blank,-,-,INTENTADO" >> $OUT
-    fi
+            # PARSEO
+            time=$(echo "$out" | grep "Search time" | head -n 1 | awk '{print $6}' | tr -d 's\n\r')
+            steps=$(echo "$out" | grep "Plan length" | head -n 1 | awk '{print $6}' | tr -d '\n\r')
+            nodes=$(echo "$out" | grep "Expanded" | head -n 1 | awk '{print $5}' | tr -d '\n\r')
 
-    # ---------------------------------------------------------
-    # 4. PDB
-    # ---------------------------------------------------------
-    echo "    [4/4] PDB + BLANK..."
-    out=$(timeout 120s $FD_PATH "Modelo B/domain.pddl" "$prob" --search "astar(ipdb())" 2>&1)
-    
-    time=$(echo "$out" | grep "Search time" | awk '{print $6}' | tr -d 's')
-    steps=$(echo "$out" | grep "Plan length" | awk '{print $6}')
-    
-    if [[ "$out" == *"Solution found"* ]]; then state="OK"; else state="TIMEOUT"; fi
-    if [ "$state" == "TIMEOUT" ]; then time="60"; steps="-"; fi
-    
-    echo "$prob_name,$diff,PDB,Blank,$time,$steps,$state" >> $OUT
+            if [[ "$out" == *"Solution found"* ]]; then 
+                state="OK"
+            else 
+                state="TIMEOUT"
+                time="30"
+                steps="-"
+                nodes="-"
+            fi
 
+            # ESCRITURA
+            echo "$prob_name,$diff,FastDownward,$model,$heur_name,$time,$steps,$nodes,$state" >> $OUT
+
+        done
+    done
 done
 
 echo ""
-echo "✅ ¡TERMINADO! Revisa $OUT"
+echo "¡BENCHMARK TERMINADO! Revisa $OUT"
