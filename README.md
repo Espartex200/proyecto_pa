@@ -1,5 +1,7 @@
 # N-PUZZLE PLANNER
+
 Proyecto para probar diferentes modelos y algoritmos para solucionar el n-puzle.
+
 ---
 
 ## 1. Comparar Modelos
@@ -22,7 +24,7 @@ Los resultados se guardan en el csv `results/benchmark_hard_completo.csv`
 
 ---
 
-# 2. Generar problemas
+## 2. Generar problemas
 
 Para generar un problema utilizar el script de python `problem_generator.py`. Se puede modificar el tamaño, número de pasos y nombre del archivo. Por ejemplo, un problema de 3x3, 20 pasos llamado "problem1.pddl" se crea usando:
 ```bash
