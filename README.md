@@ -1,20 +1,25 @@
 # N-PUZZLE PLANNER
-
 Proyecto para probar diferentes modelos y algoritmos para solucionar el n-puzle.
+---
+
 ## 1. Comparar Modelos
+
 Para comparar los modelos existen dos scripts distintos. Para ejecutarlos se recomienda crear un archivo config.env con el siguiente contenido:
+
 ---
 Para poder ejecutar la comparación estándar utilizar
 ```bash
 ./benchmark.sh
 ```
 Los resultados se guardan en el csv `results/benchmark.csv`
+
 ---
 Para poder ejecutar la comparación de problemas más complicados utilizar
 ```bash
 ./benchmark_hard.sh
 ```
 Los resultados se guardan en el csv `results/benchmark_hard_completo.csv`
+
 ---
 
 # 2. Generar problemas
