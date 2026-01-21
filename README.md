@@ -8,6 +8,11 @@ Proyecto para probar diferentes modelos y algoritmos para solucionar el n-puzle.
 
 Para comparar los modelos existen dos scripts distintos. Para ejecutarlos se recomienda crear un archivo config.env con el siguiente contenido:
 
+```env
+FD_PATH= "apptainer run ./fast-downward.sif" # O equivalente
+UCPOP_CMD= # Ruta a UCPOP
+```
+
 ---
 Para poder ejecutar la comparación estándar utilizar
 ```bash
