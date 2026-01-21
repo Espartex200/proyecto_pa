@@ -1,0 +1,25 @@
+Problema,Dificultad,Planificador,Modelo,Heuristica,Tiempo,Pasos,Nodos,Estado
+problem_blank_hard.pddl,Hard (3x3),FastDownward,Blank,IPDB,0.002147,31,192,OK
+problem_tile_hard.pddl,Hard (3x3),FastDownward,Tile,LMCut,0.810542,31,12612,OK
+problem_blank_hard.pddl,Hard (3x3),FastDownward,Blank,LMCut,0.878720,31,11965,OK
+problem_tile_hard.pddl,Hard (3x3),FastDownward,Tile,Blind,0.213603,31,181394,OK
+problem_tile_hard.pddl,Hard (3x3),FastDownward,Tile,FF,0.001616,43,199,OK
+problem_blank_hard.pddl,Hard (3x3),FastDownward,Blank,FF,0.002065,67,208,OK
+problem_tile_hard.pddl,Hard (3x3),FastDownward,Tile,IPDB,0.001166,31,192,OK
+problem_blank_hard.pddl,Hard (3x3),FastDownward,Blank,Blind,0.273146,31,181394,OK
+problem_tile_12.pddl,Hard (3x4),FastDownward,Tile,Blind,> 60s,-,-,TIMEOUT
+problem_blank_12.pddl,Hard (3x4),FastDownward,Blank,Blind,> 60s,-,-,TIMEOUT
+problem_tile_12.pddl,Hard (3x4),FastDownward,Tile,IPDB,0.253812,42,121659,OK
+problem_blank_12.pddl,Hard (3x4),FastDownward,Blank,IPDB,0.396475,42,121659,OK
+problem_tile_12.pddl,Hard (3x4),FastDownward,Tile,FF,0.016734,136,1983,OK
+problem_blank_12.pddl,Hard (3x4),FastDownward,Blank,FF,0.014260,96,658,OK
+problem_tile_12.pddl,Hard (3x4),FastDownward,Tile,LMCut,> 60s,-,-,TIMEOUT
+problem_blank_12.pddl,Hard (3x4),FastDownward,Blank,LMCut,> 60s,-,-,TIMEOUT
+problem_tile_15.pddl,Hard (4x4),FastDownward,Tile,FF,0.018394,138,865,OK
+problem_blank_15.pddl,Hard (4x4),FastDownward,Blank,LMCut,> 60s,-,-,TIMEOUT
+problem_tile_15.pddl,Hard (4x4),FastDownward,Tile,Blind,> 60s,-,-,TIMEOUT
+problem_blank_15.pddl,Hard (4x4),FastDownward,Blank,IPDB,> 60s,-,-,TIMEOUT
+problem_tile_15.pddl,Hard (4x4),FastDownward,Tile,IPDB,> 60s,-,-,TIMEOUT
+problem_tile_15.pddl,Hard (4x4),FastDownward,Tile,LMCut,> 60s,-,-,TIMEOUT
+problem_blank_15.pddl,Hard (4x4),FastDownward,Blank,FF,0.029129,198,1391,OK
+problem_blank_15.pddl,Hard (4x4),FastDownward,Blank,Blind,> 60s,-,-,TIMEOUT
